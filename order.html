@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container">
+      <h1 class="display-4">Test Talebi Oluştur</h1>
+      <p class="lead">Şirket bilgilerinizi girin; temel kontrolleri anında başlatalım.</p>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  <form method="post" action="{{ url_for('public_order_submit') }}" class="card p-3">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Şirket Adı</label>
+        <input class="form-control" type="text" name="name" required />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">E-posta</label>
+        <input class="form-control" type="email" name="email" placeholder="ornek@domain.com" required />
+        <div class="form-text">Alan sahipliği için e-posta alanı hedef alanla eşleşmelidir.</div>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">Hedef URL</label>
+        <input class="form-control" type="text" name="target_url" placeholder="https://ornek.com" required />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Plan</label>
+        <select class="form-select" name="plan">
+          {% for p in plans %}
+            <option value="{{ p }}">{{ p|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="mt-3 d-flex justify-content-between">
+      <button class="btn btn-primary" type="submit">Talebi Gönder</button>
+      <a class="btn btn-outline-secondary" href="{{ url_for('login') }}">Yönetici Girişi</a>
+    </div>
+    <div class="text-muted small mt-2">
+      <p>Not: Talep sonrası alan sahipliği doğrulaması gerekir. Geçerli politika: 
+        {% if verification_policy == 'http_and_dns' %}
+          <strong>Strict</strong> (HTTP dosya + DNS TXT birlikte şart).
+        {% elif verification_policy == 'standard' %}
+          <strong>Standard</strong> (HTTP dosya veya DNS TXT yeterli).
+        {% elif verification_policy == 'http_only' %}
+          <strong>HTTP-only</strong> (yalnızca HTTP dosya doğrulaması).
+        {% elif verification_policy == 'dns_only' %}
+          <strong>DNS-only</strong> (yalnızca DNS TXT doğrulaması).
+        {% elif verification_policy == 'email_link' %}
+          <strong>Email-link</strong> (alan eşleşen e-posta adresine gelen link ile doğrulama).
+        {% else %}
+          <strong>Strict</strong>.
+        {% endif %}
+      </p>
+      <ul>
+        <li>E-posta alanı hedef alanla eşleşmelidir.</li>
+        <li>Doğrulama token'ı e-posta ile tarafınıza iletilir.</li>
+        <li>Politikaya göre HTTP dosya ve/veya DNS TXT doğrulaması yapılır.</li>
+      </ul>
+    </div>
+  </form>
+{% endblock %}

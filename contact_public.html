@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="page-hero bg-animated hero fade-up reveal section">
+  <div class="container">
+    <h1 class="display-4">İletişim</h1>
+    <p class="lead">Sorularınız veya demo talebiniz için bize ulaşın.</p>
+  </div>
+  <div class="hero-art">
+    <div class="hero-mesh"></div>
+    <div class="orb orb-1 hero-orb"></div>
+    <div class="orb orb-2 hero-orb"></div>
+  </div>
+</section>
+
+<section class="section fade-up reveal">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3>Bize Ulaşın</h3>
+            <p>Formu doldurun, size en kısa sürede dönüş yapalım.</p>
+            <form method="post" action="#">
+              <div class="mb-3"><label class="form-label">Ad Soyad</label><input class="form-control" name="name" required></div>
+              <div class="mb-3"><label class="form-label">E‑posta</label><input class="form-control" type="email" name="email" required></div>
+              <div class="mb-3"><label class="form-label">Mesaj</label><textarea class="form-control" name="message" rows="4"></textarea></div>
+              <button class="btn btn-primary btn-gradient" type="submit">Gönder</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="contact-card">
+          <div class="contact-item"><span class="icon">📧</span><span>hello@example.com</span></div>
+          <div class="contact-item"><span class="icon">📞</span><span>+90 555 555 55 55</span></div>
+          <div class="contact-item"><span class="icon">📍</span><span>İstanbul, TR</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section fade-up">
+  <div class="container">
+    <div class="cta-card">
+      <h3>Demo İste</h3>
+      <p>Platformu canlı olarak görmek isterseniz bize yazın.</p>
+      <a class="btn btn-dark" href="{{ url_for('plans_public_view') }}">Paketleri İncele</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container">
+      <h1 class="display-4">Ayarlar</h1>
+      <p class="lead">Bildirim, doğrulama ve altyapı seçeneklerini yapılandırın.</p>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  <div class="card">
+    <p class="text-muted">SMTP ve webhook yapılandırması. Boş bırakılırsa bildirimler konsola yazılır.</p>
+    <form method="post" action="{{ url_for('settings_save') }}" class="mt-2">
+      <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">SMTP Host</label>
+        <input class="form-control" type="text" name="smtp_host" value="{{ st and st['smtp_host'] }}" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">SMTP Port</label>
+        <input class="form-control" type="number" name="smtp_port" value="{{ st and st['smtp_port'] or 587 }}" />
+      </div>
+      <div class="col-md-3 d-flex align-items-center">
+        <div class="form-check mt-4">
+          <input class="form-check-input" type="checkbox" name="smtp_tls" id="smtp_tls" {% if not st or st['smtp_tls'] %}checked{% endif %} />
+          <label class="form-check-label" for="smtp_tls">TLS kullan</label>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">SMTP Kullanıcı</label>
+        <input class="form-control" type="text" name="smtp_user" value="{{ st and st['smtp_user'] }}" />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">SMTP Şifre</label>
+        <input class="form-control" type="password" name="smtp_pass" value="{{ st and st['smtp_pass'] }}" />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Webhook URL</label>
+        <input class="form-control" type="url" name="webhook_url" value="{{ st and st['webhook_url'] }}" />
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Doğrulama Politikası</label>
+        <select class="form-select" name="verification_policy">
+          {% for val, label in policies %}
+            <option value="{{ val }}" {% if (st and st['verification_policy'] == val) or (not st and val == 'standard') %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <div class="form-text">Strict en güvenlisi (HTTP dosya + DNS TXT). Standard tek yöntemle doğrulamaya izin verir.</div>
+      </div>
+      </div>
+      <div class="mt-3">
+        <button class="btn" type="submit">Kaydet</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated hero fade-up reveal section">
+    <div class="container d-flex justify-content-between align-items-end">
+      <div>
+        <h1 class="display-4">Şirketler</h1>
+        <p class="lead">Şirketlerinizi yönetin, hedefleri tanımlayın ve taramaları başlatın.</p>
+      </div>
+      <div>
+        <a class="btn btn-gradient btn-lg" href="{{ url_for('companies_new') }}">Yeni Şirket</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-mesh"></div>
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+    </div>
+  </section>
+  
+  <div class="container">
+  <div class="mb-2 d-flex gap-2">
+    <span class="chip">Toplam: {{ total }}</span>
+    <span class="chip chip-info">Basic: {{ basic }}</span>
+    <span class="chip chip-success">Pro: {{ pro }}</span>
+    <span class="chip chip-purple">Enterprise: {{ enterprise }}</span>
+  </div>
+  </div>
+  {% set total = rows|length %}
+  {% set basic = rows|selectattr('package', 'equalto', 'basic')|list|length %}
+  {% set pro = rows|selectattr('package', 'equalto', 'pro')|list|length %}
+  {% set enterprise = rows|selectattr('package', 'equalto', 'enterprise')|list|length %}
+  <div class="mb-2 d-flex gap-2">
+    <span class="chip">Toplam: {{ total }}</span>
+    <span class="chip chip-info">Basic: {{ basic }}</span>
+    <span class="chip chip-success">Pro: {{ pro }}</span>
+    <span class="chip chip-purple">Enterprise: {{ enterprise }}</span>
+  </div>
+  <div class="table-search container">
+    <input type="text" class="form-control" placeholder="Tabloda ara..." oninput="filterCompanies(this.value)">
+  </div>
+  <div class="table-responsive d-none d-md-block container">
+    <table id="companies-table" class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ad</th>
+          <th>Paket</th>
+          <th class="d-none d-lg-table-cell">Doğrulama</th>
+          <th class="d-none d-md-table-cell">E-posta</th>
+          <th class="d-none d-lg-table-cell">Hedef URL</th>
+          <th>Son Durum</th>
+          <th>Aksiyon</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in rows %}
+        <tr>
+          <td>{{ c['id'] }}</td>
+          <td>{{ c['name'] }}</td>
+          <td>
+            {% set p = c['package'] %}
+            <span class="badge {{ 'badge-gray' if p=='basic' else ('badge-blue' if p=='pro' else 'badge-purple') }}">{{ p|capitalize }}</span>
+            {% if c['aggressive_pentest'] == 1 %}
+              <span class="chip chip-warning ms-1">Agresif</span>
+            {% endif %}
+          </td>
+          <td class="d-none d-lg-table-cell">
+            {% if c['verified'] == 1 %}
+              <span class="badge badge-green">Doğrulandı</span>
+            {% else %}
+              <span class="badge badge-gray">Bekliyor</span>
+              {% if verification_policy == 'email_link' %}
+                <div class="text-muted small mt-1">Doğrulama: E-postadaki linke tıklayın.</div>
+              {% else %}
+                {% if c['verify_token'] %}
+                  <div class="text-muted small mt-1">Token: {{ c['verify_token'] }}</div>
+                  {% if verification_policy in ['http_only','standard','http_and_dns'] %}
+                    <div class="text-muted small">Dosya yolu: /.well-known/pentest-verify.txt</div>
+                  {% endif %}
+                  {% if verification_policy in ['dns_only','standard','http_and_dns'] %}
+                    <div class="text-muted small">DNS TXT için değer: token</div>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          </td>
+          <td class="d-none d-md-table-cell">{{ c['email'] or '-' }}</td>
+          <td class="d-none d-lg-table-cell"><span class="text-truncate d-inline-block" style="max-width:240px;">{{ c['target_url'] }}</span></td>
+          <td>
+            {% if c['last_detail'] %}
+              {% if '[!]' in c['last_detail'] or '[-]' in c['last_detail'] %}
+                <span class="badge badge-red">Uyarı</span>
+              {% else %}
+                <span class="badge badge-green">Temiz</span>
+              {% endif %}
+              {% if c['last_run'] %}
+                <span class="chip ms-1">{{ c['last_run'] | int | datetime }}</span>
+              {% endif %}
+              {% if c['last_summary'] %}
+                <div class="text-muted small mt-1">Özet: {{ c['last_summary'] }}</div>
+              {% endif %}
+              {% if hints %}
+                {% set hint = hints.get(c['id']) %}
+                {% if hint %}
+                  <div class="text-muted small mt-1">Kısa açıklama: {{ hint }}</div>
+                {% endif %}
+              {% endif %}
+              <div class="mt-1">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('results_list') }}?company_id={{ c['id'] }}">Detaylar</a>
+              </div>
+            {% else %}
+              <span class="chip">Henüz tarama yok</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-2 flex-wrap">
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('companies_edit', company_id=c['id']) }}">Düzenle</a>
+              {% if c['verified'] == 1 %}
+                <form method="post" action="{{ url_for('run_now') }}" onsubmit="return confirm('Bu şirket için manuel tarama çalıştırılsın mı?');">
+                  <input type="hidden" name="company_id" value="{{ c['id'] }}" />
+                  <button class="btn btn-sm btn-outline-primary" type="submit">Şimdi Tara</button>
+                </form>
+              {% else %}
+                {% if verification_policy == 'email_link' %}
+                  <button class="btn btn-sm btn-outline-secondary" type="button" disabled>E-posta doğrulaması bekleniyor</button>
+                {% else %}
+                  <form method="post" action="{{ url_for('companies_verify_check', company_id=c['id']) }}" onsubmit="return confirm('Doğrulama kontrol edilsin mi?');">
+                    <button class="btn btn-sm btn-outline-success" type="submit">Doğrulamayı Kontrol Et</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="d-md-none container">
+    {% for c in rows %}
+    <div class="card mb-2">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="h6 mb-1">#{{ c['id'] }} {{ c['name'] }}</div>
+          <div class="text-muted small">Paket: 
+            {% set p = c['package'] %}
+            <span class="badge {{ 'badge-gray' if p=='basic' else ('badge-blue' if p=='pro' else 'badge-purple') }}">{{ p|capitalize }}</span>
+          </div>
+        </div>
+        <div>
+          {% if c['verified'] == 1 %}
+            <span class="badge badge-green">Doğrulandı</span>
+          {% else %}
+            <span class="badge badge-gray">Bekliyor</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="text-muted small">E-posta: {{ c['email'] or '-' }}</div>
+      <div class="text-muted small">URL: <span class="text-truncate d-inline-block" style="max-width: 240px;">{{ c['target_url'] }}</span></div>
+      {% if c['aggressive_pentest'] == 1 %}
+        <div class="text-muted small">Profil: Agresif</div>
+      {% endif %}
+      <div class="mt-1">
+        {% if c['last_detail'] %}
+          {% if '[!]' in c['last_detail'] or '[-]' in c['last_detail'] %}
+            <span class="badge badge-red">Uyarı</span>
+          {% else %}
+            <span class="badge badge-green">Temiz</span>
+          {% endif %}
+          {% if c['last_run'] %}
+            <span class="chip ms-1">{{ c['last_run'] | int | datetime }}</span>
+          {% endif %}
+        {% else %}
+          <span class="chip">Henüz tarama yok</span>
+        {% endif %}
+      </div>
+      <div class="d-flex gap-2 flex-wrap mt-2">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('companies_edit', company_id=c['id']) }}">Düzenle</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('results_list') }}?company_id={{ c['id'] }}">Detaylar</a>
+        {% if c['verified'] == 1 %}
+          <form method="post" action="{{ url_for('run_now') }}" onsubmit="return confirm('Bu şirket için manuel tarama çalıştırılsın mı?');">
+            <input type="hidden" name="company_id" value="{{ c['id'] }}" />
+            <button class="btn btn-sm btn-outline-primary" type="submit">Şimdi Tara</button>
+          </form>
+        {% else %}
+          <button class="btn btn-sm btn-outline-secondary" type="button" disabled>Doğrulama Bekleniyor</button>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <script>
+    function filterCompanies(q){
+      const term = (q||'').toLowerCase();
+      document.querySelectorAll('#companies-table tbody tr').forEach(tr => {
+        tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
+    }
+  </script>
+{% endblock %}

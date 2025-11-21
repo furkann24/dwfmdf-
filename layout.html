@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or 'PenTest SaaS' }}</title>
+    <!-- Inter font for React-like SPA typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='style.css') }}?v=9" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='react.css') }}?v=2" rel="stylesheet" />
+    <script>(function(){ document.documentElement.classList.add('js'); })();</script>
+  </head>
+  <body class="app-bg theme-light">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="topbar-left">
+          <a class="brand" href="{{ url_for('dashboard') if g.user else url_for('public_landing_view') }}">PenTest SaaS</a>
+        </div>
+        <nav class="nav-links">
+          <a class="{{ 'active' if request.path.startswith('/plans') else '' }}" href="{{ url_for('plans_public_view') }}">Planlar</a>
+          <a class="{{ 'active' if request.path.startswith('/pricing') else '' }}" href="{{ url_for('pricing_view') if false else url_for('plans_public_view') }}">Fiyatlandırma</a>
+          <a class="{{ 'active' if request.path.startswith('/features') else '' }}" href="{{ url_for('features_public_view') }}">Özellikler</a>
+          <a class="{{ 'active' if request.path.startswith('/about') else '' }}" href="{{ url_for('about_public_view') }}">Hakkımızda</a>
+          <a class="{{ 'active' if request.path.startswith('/contact') else '' }}" href="{{ url_for('contact_public_view') }}">İletişim</a>
+        </nav>
+        <div class="topbar-actions">
+          <a class="btn btn-gradient btn-sm-cta" href="{{ url_for('plans_public_view') }}">Hemen Başla</a>
+          <button id="theme-toggle" type="button" class="btn-sm">Tema: Açık</button>
+          <span class="username">{{ g.user['username'] if g.user else '' }}</span>
+          {% if g.user %}<a class="btn-sm" href="{{ url_for('logout') }}">Çıkış</a>{% endif %}
+          <button id="menu-toggle" type="button" class="btn-sm" aria-label="Menüyü Aç/Kapat" aria-expanded="false">☰</button>
+        </div>
+      </div>
+      {% if not g.user %}
+      <nav class="mobile-nav" id="mobile-nav" aria-hidden="true">
+        <a href="{{ url_for('plans_public_view') }}">Planlar</a>
+        <a href="{{ url_for('features_public_view') }}">Özellikler</a>
+        <a href="{{ url_for('about_public_view') }}">Hakkımızda</a>
+        <a href="{{ url_for('contact_public_view') }}">İletişim</a>
+      </nav>
+      {% endif %}
+    </header>
+    <div class="menu-backdrop" id="menu-backdrop" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      {% if g.user %}
+      <aside class="sidebar">
+        <div class="brand" style="font-weight:600; color: var(--brand);">Menü</div>
+        <div class="nav">
+          <a class="{{ 'active' if request.path.startswith('/dashboard') else '' }}" href="{{ url_for('dashboard') }}">Panel</a>
+          <a class="{{ 'active' if request.path.startswith('/companies') else '' }}" href="{{ url_for('companies_list') }}">Şirketler</a>
+          <a class="{{ 'active' if request.path.startswith('/schedules') else '' }}" href="{{ url_for('schedules_list') }}">Programlar</a>
+          <a class="{{ 'active' if request.path.startswith('/results') else '' }}" href="{{ url_for('results_list') }}">Sonuçlar</a>
+          <a class="{{ 'active' if request.path.startswith('/payments') else '' }}" href="{{ url_for('payments_list') }}">Ödemeler</a>
+          <a class="{{ 'active' if request.path.startswith('/admin/plans') else '' }}" href="{{ url_for('admin_plans_view') }}">Planlar</a>
+          <a class="{{ 'active' if request.path.startswith('/settings') else '' }}" href="{{ url_for('settings_view') }}">Ayarlar</a>
+        </div>
+      </aside>
+      {% endif %}
+      <main class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mt-2">
+              {% for category, msg in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                  {{ msg }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-col">
+          <div class="footer-brand">PenTest SaaS</div>
+          <p class="footer-text">Üretimi yormadan güvenlik görünürlüğü. Akıllı başlık kontrolleri ve port keşfi ile hızlı geri bildirim.</p>
+        </div>
+        <div class="footer-col">
+          <div class="footer-title">Ürün</div>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('public_landing_view') }}#features">Özellikler</a></li>
+            <li><a href="{{ url_for('plans_public_view') }}">Planlar</a></li>
+            <li><a href="{{ url_for('public_landing_view') }}#faq">SSS</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-title">İletişim</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@example.com">hello@example.com</a></li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container d-flex justify-content-between align-items-center">
+          <small>© {{ 2025 }} PenTest SaaS</small>
+          <small><a href="#" class="text-muted" style="text-decoration:none;">Gizlilik</a> · <a href="#" class="text-muted" style="text-decoration:none;">Şartlar</a></small>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (function(){
+        const body = document.body;
+        const key = 'theme';
+        const btn = document.getElementById('theme-toggle');
+        const menuBtn = document.getElementById('menu-toggle');
+        const backdrop = document.getElementById('menu-backdrop');
+        const applyLabel = (mode) => { if (btn) btn.textContent = 'Tema: ' + mode; };
+        const applyTheme = (t) => {
+          if (t === 'dark') { body.classList.remove('theme-light'); body.classList.add('theme-dark'); applyLabel('Koyu'); }
+          else { body.classList.remove('theme-dark'); body.classList.add('theme-light'); applyLabel('Açık'); }
+        };
+        const saved = localStorage.getItem(key) || 'light';
+        applyTheme(saved);
+        if (btn) {
+          btn.addEventListener('click', function(){
+            const next = body.classList.contains('theme-dark') ? 'light' : 'dark';
+            localStorage.setItem(key, next);
+            applyTheme(next);
+          });
+        }
+
+        const hasSidebar = !!document.querySelector('.sidebar');
+        const hasMobileNav = !!document.getElementById('mobile-nav');
+        const openMenu = () => {
+          if (hasSidebar) { body.classList.add('sidebar-open'); }
+          else if (hasMobileNav) { body.classList.add('mobile-open'); }
+          if (menuBtn) menuBtn.setAttribute('aria-expanded','true');
+        };
+        const closeMenu = () => {
+          body.classList.remove('sidebar-open');
+          body.classList.remove('mobile-open');
+          if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+        };
+        if (menuBtn) {
+          menuBtn.addEventListener('click', function(){
+            const isOpen = body.classList.contains('sidebar-open') || body.classList.contains('mobile-open');
+            if (isOpen) closeMenu(); else openMenu();
+          });
+        }
+        if (backdrop) {
+          backdrop.addEventListener('click', closeMenu);
+        }
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+        document.querySelectorAll('.sidebar .nav a').forEach(a => { a.addEventListener('click', closeMenu); });
+        document.querySelectorAll('.mobile-nav a').forEach(a => { a.addEventListener('click', closeMenu); });
+
+        // Basit giriş animasyonu: .fade-up sınıfı taşıyan öğeler yüklemede animasyon uygular
+        document.querySelectorAll('.fade-up').forEach((el, idx) => {
+          el.style.animationDelay = (idx * 60) + 'ms';
+        });
+
+        // Scroll reveal: .reveal öğeleri görünür olduğunda class ekle
+        const revealEls = Array.from(document.querySelectorAll('.reveal'));
+        if (revealEls.length) {
+          // Stagger reveal via CSS variable
+          revealEls.forEach((el, idx) => el.style.setProperty('--reveal-delay', (idx * 80) + 'ms'));
+          const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) entry.target.classList.add('is-visible');
+            });
+          }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+          revealEls.forEach(el => io.observe(el));
+        }
+      })();
+    </script>
+    <!-- GSAP & ScrollTrigger for advanced animations -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <script>
+      (function(){
+        if (!window.gsap || !window.ScrollTrigger) return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero entrance
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        heroTl
+          .from('.hero .display-4', { y: 28, opacity: 0, duration: 0.6 })
+          .from('.hero .lead', { y: 18, opacity: 0, duration: 0.5 }, '-=0.2')
+          .from('.hero .btn', { y: 14, opacity: 0, stagger: 0.1, duration: 0.45 }, '-=0.2')
+          .from('.hero-mesh', { opacity: 0, duration: 0.8 }, '-=0.3');
+
+        // Parallax orbs
+        gsap.utils.toArray('.hero-orb').forEach((orb, idx) => {
+          gsap.to(orb, {
+            yPercent: idx % 2 === 0 ? -12 : 12,
+            xPercent: idx % 2 === 0 ? 10 : -10,
+            duration: 9 + idx,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+          });
+        });
+
+        // Section reveals: rely on IntersectionObserver-based .reveal logic above
+
+        // Feature cards (ScrollTrigger kaldırıldı, CSS/IO reveal yeterli)
+
+        // Trusted logos hover micro-interactions
+        gsap.utils.toArray('.trusted-logos img, .trusted-logos .logo').forEach((logo) => {
+          logo.addEventListener('mouseenter', () => gsap.to(logo, { scale: 1.06, duration: 0.2 }));
+          logo.addEventListener('mouseleave', () => gsap.to(logo, { scale: 1.0, duration: 0.2 }));
+        });
+      })();
+    </script>
+  </body>
+</html>

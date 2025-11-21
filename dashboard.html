@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-4">
+    <div class="container">
+      <h1 class="display-4">Kontrol Paneli</h1>
+      <p class="lead">Şirketleri yönetin, programları başlatın ve sonuçları takip edin.</p>
+      <div class="mt-2">
+        <a class="btn btn-primary" href="{{ url_for('companies_new') }}">Yeni Şirket Ekle</a>
+        <a class="btn btn-outline-primary ms-2" href="{{ url_for('schedules_new') }}">Yeni Program Oluştur</a>
+      </div>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+
+  <div class="card p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <div class="h6 m-0">Plan satın alma</div>
+        <div class="text-muted">Şirket paketini yükseltmek için ödeme yapın.</div>
+      </div>
+  <a class="btn btn-outline-primary" href="{{ url_for('admin_plans_view') }}">Planlar</a>
+    </div>
+  </div>
+
+  <div class="row g-3 align-items-stretch">
+    <div class="col-md-3">
+      <div class="card h-100 p-3">
+        <div class="chip chip-info">Genel</div>
+        <div class="text-muted">Toplam Şirket</div>
+        <div class="display-6">{{ companies_count }}</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card h-100 p-3">
+        <div class="chip chip-success">Planlı</div>
+        <div class="text-muted">Aktif Program</div>
+        <div class="display-6">{{ active_schedules }}</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card h-100 p-3">
+        <div class="chip chip-warning">Hızlı</div>
+        <div class="text-muted">Hızlı İşlem</div>
+        <form method="post" action="{{ url_for('run_now') }}" class="d-flex mt-1" onsubmit="return confirm('Manuel tarama çalıştırılsın mı?');">
+          <input class="form-control me-2" type="number" name="company_id" placeholder="Şirket ID" required />
+          <button class="btn btn-primary" type="submit">Şimdi Tara</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card h-100 p-3">
+        <div class="chip chip-danger">Risk</div>
+        <div class="text-muted">Kritik Açık</div>
+        <div class="display-6">{{ critical_findings or 0 }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="h5 m-0">Aktivite Akışı</div>
+      <div class="table-search">
+        <input type="text" class="form-control" placeholder="Ara..." oninput="filterFeed(this.value)">
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('results_list') }}">Tüm sonuçlar</a>
+      </div>
+    </div>
+    <ul id="activity-feed" class="feed">
+      {% for item in activities %}
+      <li>
+        <div class="icon">⏱</div>
+        <div>
+          <div><strong>{{ item.title }}</strong></div>
+          <div class="text-muted">{{ item.time }} • {{ item.meta }}</div>
+        </div>
+      </li>
+      {% else %}
+      <li>
+        <div class="icon">ℹ️</div>
+        <div>
+          <div class="text-muted">Henüz aktivite yok. Program başlatın veya sonuçları içe aktarın.</div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Risk İstatistiği -->
+  <div class="card mt-4 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="h5 m-0">Risk İstatistiği</div>
+      <span class="chip chip-secondary">Toplam: {{ risk_stats.total }}</span>
+    </div>
+    <div class="row g-3 align-items-stretch">
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="chip chip-danger">Yüksek</div>
+          <div class="text-muted">Son 100 sonuç üzerinden</div>
+          <div class="display-6 text-danger">{{ risk_stats.high }}</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="chip chip-warning">Orta</div>
+          <div class="text-muted">Son 100 sonuç üzerinden</div>
+          <div class="display-6 text-warning">{{ risk_stats.medium }}</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="chip chip-success">Düşük</div>
+          <div class="text-muted">Son 100 sonuç üzerinden</div>
+          <div class="display-6 text-success">{{ risk_stats.low }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h2 class="section-title">Son 10 Tarama</h2>
+      <div class="table-search">
+        <input type="text" class="form-control" placeholder="Tabloda ara..." oninput="filterTable(this.value)">
+      </div>
+      <div class="table-responsive">
+        <table id="recent-table" class="table table-striped">
+          <thead>
+            <tr><th>ID</th><th>Şirket</th><th>Tarih</th><th>Özet</th></tr>
+          </thead>
+          <tbody>
+            {% for r in recent %}
+            <tr>
+              <td>{{ r['id'] }}</td>
+              <td>#{{ r['company_id'] }} {{ r['name'] }}</td>
+              <td>{{ r['created_at'] | int | datetime }}</td>
+              <td>{{ r['summary'] }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('results_list') }}">Tüm Sonuçlar</a>
+    </div>
+  </div>
+
+  <script>
+    function filterFeed(q){
+      const items = document.querySelectorAll('#activity-feed li');
+      const term = (q||'').toLowerCase();
+      items.forEach(li => {
+        const text = li.textContent.toLowerCase();
+        li.style.display = text.includes(term) ? '' : 'none';
+      });
+    }
+    function filterTable(q){
+      const term = (q||'').toLowerCase();
+      document.querySelectorAll('#recent-table tbody tr').forEach(tr => {
+        tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
+    }
+  </script>
+{% endblock %}

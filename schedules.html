@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container d-flex justify-content-between align-items-end">
+      <div>
+        <h1 class="display-4">Programlar</h1>
+        <p class="lead">Zamanlanmış taramaları yönetin ve manuel çalıştırın.</p>
+      </div>
+      <div class="mb-2">
+        <a class="btn btn-primary" href="{{ url_for('schedules_new') }}">Yeni Program</a>
+      </div>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  {% set total = rows|length %}
+  {% set active = rows|selectattr('active')|list|length %}
+  {% set passive = total - active %}
+  <div class="mb-2 d-flex gap-2">
+    <span class="chip">Toplam: {{ total }}</span>
+    <span class="chip chip-success">Aktif: {{ active }}</span>
+    <span class="chip chip-gray">Pasif: {{ passive }}</span>
+  </div>
+  <div class="table-search">
+    <input type="text" class="form-control" placeholder="Tabloda ara..." oninput="filterSchedules(this.value)">
+  </div>
+  <div class="table-responsive">
+    <table id="schedules-table" class="table table-hover">
+      <thead>
+        <tr><th>ID</th><th>Şirket</th><th>Aralık (dk)</th><th>Aktif</th><th>Sonraki Çalışma</th><th>Aksiyon</th></tr>
+      </thead>
+      <tbody>
+        {% for s in rows %}
+        <tr>
+          <td>{{ s['id'] }}</td>
+          <td>#{{ s['company_id'] }} {{ s['name'] }}</td>
+          <td>{{ s['interval_minutes'] }}</td>
+          <td>
+            <span class="badge {{ 'badge-green' if s['active'] else 'badge-gray' }}">{{ s['active'] and 'Aktif' or 'Pasif' }}</span>
+          </td>
+          <td>
+            {% if s['next_run'] %}
+              <span class="chip">{{ s['next_run'] | int | datetime }}</span>
+            {% else %}
+              <span class="chip">-</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <form method="post" action="{{ url_for('run_now') }}" onsubmit="return confirm('Şimdi manuel tarama çalıştırılsın mı?');">
+                <input type="hidden" name="company_id" value="{{ s['company_id'] }}" />
+                <button class="btn btn-sm btn-outline-primary" type="submit">Şimdi Çalıştır</button>
+              </form>
+              <form method="post" action="{{ url_for('schedules_toggle', schedule_id=s['id']) }}">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">{{ s['active'] and 'Pasifleştir' or 'Aktifleştir' }}</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    function filterSchedules(q){
+      const term = (q||'').toLowerCase();
+      document.querySelectorAll('#schedules-table tbody tr').forEach(tr => {
+        tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
+    }
+  </script>
+{% endblock %}

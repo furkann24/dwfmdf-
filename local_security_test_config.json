@@ -1,0 +1,27 @@
+{
+  "target_base_url": "http://127.0.0.1:5013",
+  "login_endpoint": "/api/login",
+  "login_payload_example": {
+    "username": "admin",
+    "password": "admin123"
+  },
+  "auth_type": "session_cookie",
+  "session_cookie_name": "session",
+  "protected_endpoints": [
+    {"method": "GET", "path": "/dashboard"},
+    {"method": "GET", "path": "/results"},
+    {"method": "GET", "path": "/schedules"},
+    {"method": "GET", "path": "/settings"},
+    {"method": "GET", "path": "/companies"}
+  ],
+  "test_accounts": [
+    {"role": "admin", "identifier": "admin", "password": "admin123"}
+  ],
+  "id_param_examples": [
+    {"method": "GET", "path": "/api/users/{id}", "id_sample": 1}
+  ],
+  "upload_endpoints": [],
+  "csrf_token_meta": {"field_name": "_csrf", "location": "form"},
+  "testing_window": "local-dev",
+  "permission_statement": "Local geliştirme ortamı; kimlik doğrulamalı kontroller serbesttir."
+}

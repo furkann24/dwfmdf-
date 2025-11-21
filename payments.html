@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container d-flex justify-content-between align-items-end">
+      <div>
+        <h1 class="display-4">Ödemeler</h1>
+        <p class="lead">Plan hareketleri ve makbuzlara hızlı erişim.</p>
+      </div>
+      <div class="mb-2">
+        <a class="btn btn-primary" href="{{ url_for('pricing_view') }}">Plan Satın Al</a>
+      </div>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  {% if plan_features %}
+    <div class="card mb-3 p-3">
+      <div class="h6 mb-2">Plan Özellikleri</div>
+      <div class="row g-2">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 p-3">
+            <div class="h6">Basic</div>
+            <ul class="text-muted mb-0" style="margin-top:8px;">
+              {% for f in plan_features['basic'] %}
+                <li>{{ f }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 p-3">
+            <div class="h6">Pro</div>
+            <ul class="text-muted mb-0" style="margin-top:8px;">
+              {% for f in plan_features['pro'] %}
+                <li>{{ f }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100 p-3">
+            <div class="h6">Enterprise</div>
+            <ul class="text-muted mb-0" style="margin-top:8px;">
+              {% for f in plan_features['enterprise'] %}
+                <li>{{ f }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <div class="table-responsive">
+    <table class="table table-striped" id="payments-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th class="d-none d-lg-table-cell">Kullanıcı</th>
+          <th>Şirket</th>
+          <th>Plan</th>
+          <th>Tutar</th>
+          <th class="d-none d-md-table-cell">Para</th>
+          <th>Durum</th>
+          <th class="d-none d-lg-table-cell">Sağlayıcı</th>
+          <th>Tarih</th>
+          <th>Makbuz</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in rows %}
+        <tr>
+          <td>{{ p['id'] }}</td>
+          <td class="d-none d-lg-table-cell">{{ p['user_name'] or '-' }}</td>
+          <td>#{{ p['company_id'] }} {{ p['company_name'] or '-' }}</td>
+          <td><span class="chip">{{ p['plan']|capitalize }}</span></td>
+          <td>{{ (p['amount']/100)|round(2) }}</td>
+          <td class="d-none d-md-table-cell">{{ p['currency']|upper }}</td>
+          <td>
+            {% if p['status']=='paid' %}
+              <span class="badge badge-green">Ödendi</span>
+            {% elif p['status']=='failed' %}
+              <span class="badge badge-red">Hata</span>
+            {% else %}
+              <span class="badge badge-blue">Başlatıldı</span>
+            {% endif %}
+          </td>
+          <td class="d-none d-lg-table-cell">{{ p['provider'] or '-' }}</td>
+          <td>{{ p['created_at'] | int | datetime }}</td>
+          <td>
+            {% if p['receipt_url'] %}
+              <a class="btn btn-sm btn-outline-secondary" href="{{ p['receipt_url'] }}" target="_blank">Makbuz</a>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

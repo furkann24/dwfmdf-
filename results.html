@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container">
+      <h1 class="display-4">Sonuçlar</h1>
+      <p class="lead">Taramalarınızın özetlerini ve bulgularını hızlıca inceleyin.</p>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <h2 class="section-title">Liste</h2>
+      {% if rows and rows|length > 0 %}
+        <a class="btn btn-primary btn-sm" href="{{ url_for('result_pdf', rid=rows[0]['id']) }}">📄 Son Rapor PDF</a>
+      {% endif %}
+    </div>
+    <div class="table-search" style="max-width:480px;">
+      <input type="text" class="form-control" placeholder="Tabloda ara..." oninput="filterResults(this.value)">
+      <div class="form-check d-flex align-items-center">
+        <input class="form-check-input" type="checkbox" id="onlyWarn" onchange="toggleWarnings(this.checked)">
+        <label class="form-check-label ms-1" for="onlyWarn">Sadece uyarılar</label>
+      </div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table id="results-table" class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Şirket</th>
+          <th>Tarih</th>
+          <th class="d-none d-md-table-cell">Özet</th>
+          <th>Durum</th>
+          <th>İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ r['id'] }}</td>
+          <td>#{{ r['company_id'] }} {{ r['name'] }}</td>
+          <td>{{ r['created_at'] | int | datetime }}</td>
+          <td class="d-none d-md-table-cell">{{ r['summary'] }}</td>
+          <td>
+            {% if '[!]' in r['detail'] or '[-]' in r['detail'] %}
+              <span class="badge badge-red">Uyarı</span>
+            {% else %}
+              <span class="badge badge-green">Temiz</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-sm btn-primary" href="{{ url_for('results_view', rid=r['id']) }}">Detay</a>
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('result_pdf', rid=r['id']) }}">📄 PDF</a>
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('result_pdf', rid=r['id']) }}?dl=1">PDF indir</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <style>
+    /* Liste sade: inline detay ve bulgu kartları kaldırıldı */
+  </style>
+  <script>
+    function filterResults(q){
+      const term = (q||'').toLowerCase();
+      document.querySelectorAll('#results-table tbody tr').forEach(tr => {
+        tr.style.display = tr.textContent.toLowerCase().includes(term) ? '' : 'none';
+      });
+    }
+    function toggleWarnings(only){
+      document.querySelectorAll('#results-table tbody tr').forEach(tr => {
+        const warn = tr.textContent.includes('Uyarı');
+        tr.style.display = only ? (warn ? '' : 'none') : '';
+      });
+    }
+  </script>
+{% endblock %}

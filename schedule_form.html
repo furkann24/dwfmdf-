@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container">
+      <h1 class="display-4">Yeni Program</h1>
+      <p class="lead">Bir şirket için aralık tanımlayın ve otomatik çalıştırın.</p>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  <form method="post" action="{{ url_for('schedules_create') }}" class="mt-3">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Şirket</label>
+        <select class="form-select" name="company_id" required>
+          {% for c in companies %}
+          <option value="{{ c['id'] }}">#{{ c['id'] }} {{ c['name'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Aralık (dakika)</label>
+        <input class="form-control" type="number" name="interval_minutes" value="60" min="5" required />
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Kaydet</button>
+      <a class="btn btn-link" href="{{ url_for('schedules_list') }}">İptal</a>
+    </div>
+  </form>
+{% endblock %}

@@ -1,0 +1,369 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="landing-hero fade-up reveal" id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">Modern, güvenli ve hızlı güvenlik analizi</h1>
+      <p class="hero-subtitle">Üretimi yormadan — akıllı başlık kontrolleri, port keşfi ve opt-in agresif testlerle yüksek değerli yanlış yapılandırmaları yakalayın.</p>
+      <div class="hero-cta">
+        <a href="{{ url_for('plans_public_view') }}" class="btn btn-primary btn-lg btn-gradient">Paketleri İncele</a>
+        <a href="{{ url_for('public_landing_view') }}#contact" class="btn btn-outline btn-lg btn-glow">İletişime Geç</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-mesh"></div>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="grid-bg"></div>
+    </div>
+  </div>
+</section>
+
+<section class="gh-trust fade-up" id="trusted">
+  <div class="container gh-trust-inner">
+    <span class="gh-trust-title">Güvenilen ekipler:</span>
+    <div class="gh-trust-logos">
+      <span class="gh-logo">Acme</span>
+      <span class="gh-logo">FinTechCo</span>
+      <span class="gh-logo">CloudOps</span>
+      <span class="gh-logo">DevStudio</span>
+      <span class="gh-logo">RetailX</span>
+    </div>
+  </div>
+  <style>
+    .gh-trust { padding: 18px 0; }
+    .gh-trust-inner { display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap; }
+    .gh-trust-title { color: var(--muted); }
+    .gh-trust-logos { display:flex; gap:10px; flex-wrap:wrap; }
+    .gh-logo { border:1px dashed var(--border); border-radius:8px; padding:6px 10px; color: var(--muted); background:#f9fafb; }
+    .theme-dark .gh-logo { background: rgba(255,255,255,0.06); }
+  </style>
+</section>
+
+<section class="landing-highlights fade-up">
+  <div class="container highlights">
+    <div class="highlight">
+      <span class="highlight-title">Non‑Destructive</span>
+      <span class="highlight-text">HEAD→GET stratejisi, üretime yük bindirmeden keşif</span>
+    </div>
+    <div class="highlight">
+      <span class="highlight-title">Agresif (Opt‑in)</span>
+      <span class="highlight-text">Daha geniş dosya/endpoint profili, Enterprise için</span>
+    </div>
+    <div class="highlight">
+      <span class="highlight-title">Yapılandırılabilir</span>
+      <span class="highlight-text">Dosya ve endpoint listelerini size göre özelleştirin</span>
+    </div>
+  </div>
+</section>
+
+<section class="landing-features fade-up reveal" id="features">
+  <div class="container">
+    <div class="section-head">
+      <h2>Öne Çıkan Özellikler</h2>
+      <p>Güvenlik başlıkları, port taraması ve agresif profil ile daha kapsamlı görünürlük.</p>
+    </div>
+    <div class="features-grid">
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="feature-icon">🛡️</div>
+          <h5>Güvenlik Başlıkları</h5>
+          <p>HSTS, CSP, X‑Frame‑Options, X‑Content‑Type‑Options ve daha fazlası.</p>
+        </div>
+      </div>
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="feature-icon">🔎</div>
+          <h5>Port Keşfi</h5>
+          <p>Hızlı TCP port taraması ile açık yüzeyin görünürlüğü.</p>
+        </div>
+      </div>
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="feature-icon">⚙️</div>
+          <h5>Agresif Profil</h5>
+          <p>Genişletilmiş hassas dosyalar ve dev/admin endpoint kontrolü (opt‑in).</p>
+        </div>
+      </div>
+      <div class="card feature-card">
+        <div class="card-body">
+          <div class="feature-icon">✅</div>
+          <h5>Etik ve Güvenli</h5>
+          <p>Üretim sistemlerini zorlamadan yüksek değerli yanlış yapılandırmaları yakalamak.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gh-pillars fade-up">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>Ürün Sütunları</h2>
+      <p>Güvenlik, hız ve şeffaflık üzerine kurulu üç temel ilke.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>Güvenlik</h5>
+            <p>Non‑destructive kontroller, opt‑in agresif profil ve rol tabanlı yetkilendirme.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>Hız</h5>
+            <p>Başlık ve port keşfi optimizasyonlarıyla hızlı görünürlük ve geri bildirim.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>Şeffaflık</h5>
+            <p>Bulgu ve öneri kartları, anlaşılır raporlar ve net aksiyonlar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-code fade-up">
+  <div class="container">
+    <div class="section-head">
+      <h2>Nasıl Çalışır?</h2>
+      <p>Basit bir akışla sonuçlarınız “Bulgu ve Öneri” kartlarında görünür.</p>
+    </div>
+    <div class="code-block">
+<pre><code># Baseline
+[*] Baseline Sızma Testi
+  - Güvenlik Başlıkları kontrol edildi
+  - Port Taraması tamamlandı
+
+# Agresif (Enterprise ve opt‑in)
+[*] Agresif Sızma Testi
+  - Hassas dosyalar denetlendi
+  - Dev/Admin endpoint keşfi yapıldı
+</code></pre>
+    </div>
+    <div class="cta-row">
+    <a href="{{ url_for('plans_public_view') }}" class="btn btn-primary btn-lg">Şimdi Başlayın</a>
+    </div>
+  </div>
+</section>
+
+<section class="gh-dual fade-up">
+  <div class="container gh-dual-inner">
+    <div class="gh-dual-left">
+      <div class="code-block">
+<pre><code>GET / HTTP/1.1
+Host: example.com
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self'
+</code></pre>
+      </div>
+    </div>
+    <div class="gh-dual-right">
+      <div class="card">
+        <div class="card-body">
+          <h5>Bulgu & Öneri</h5>
+          <p>Eksik başlıklara yönelik hızlı öneriler ve örnek konfigürasyonlarla aksiyon alın.</p>
+          <div class="chip">CSP</div> <div class="chip">HSTS</div> <div class="chip">X‑Frame‑Options</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .gh-dual { padding: 24px 0; }
+    .gh-dual-inner { display:grid; grid-template-columns: 1.2fr 0.8fr; gap:16px; }
+    @media (max-width: 992px){ .gh-dual-inner { grid-template-columns: 1fr; } }
+  </style>
+</section>
+
+<section class="landing-usecases fade-up">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>Kullanım Senaryoları</h2>
+      <p>Farklı ihtiyaçlara göre ölçeklenen akıllı güvenlik görünürlüğü.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5>Startup’lar</h5>
+            <p>Hızlı kurulum, temel görünürlük ve düşük operasyon yükü.</p>
+            <span class="chip">Düşük maliyet</span>
+            <span class="chip">Hızlı</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5>KOBİ’ler</h5>
+            <p>Konfigüre edilebilir kapsam, bulgular ve önerilerle aksiyona dönüştürme.</p>
+            <span class="chip">Özelleştirilebilir</span>
+            <span class="chip">Raporlama</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5>Enterprise</h5>
+            <p>Opt‑in agresif profil, geniş dosya ve endpoint kontrolü.</p>
+            <span class="chip">Geniş Kapsam</span>
+            <span class="chip">Opt‑in</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-steps fade-up">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>3 Adımda Başlayın</h2>
+      <p>İşinizi yormadan görünürlüğü artırın ve riskleri azaltın.</p>
+    </div>
+    <div class="row g-3 text-center">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="badge badge-blue">1</div>
+            <h5>Planı Seç</h5>
+            <p>İhtiyacına göre Basic, Pro veya Enterprise.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="badge badge-blue">2</div>
+            <h5>Hedefi Tanımla</h5>
+            <p>URL ve kapsam ayarlarını yapılandır.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="badge badge-blue">3</div>
+            <h5>Taramayı Başlat</h5>
+            <p>Sonuçları bulgu kartlarında aksiyona dönüştür.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-testimonials fade-up">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>Müşteri Geri Bildirimleri</h2>
+      <p>Gerçek ekiplerin deneyimi: hızlı kurulum, net bulgular, uygulanabilir öneriler.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <p>“Kurulum 10 dakikadan kısa sürdü, bulguları ekibe aktarmamız çok kolay oldu.”</p>
+            <span class="chip">CTO — SaaS</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <p>“Agresif profil sayesinde staging’de kritik yanlış konfigürasyonları yakaladık.”</p>
+            <span class="chip">Security Lead — FinTech</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-faq fade-up" id="faq">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>Sık Sorulan Sorular</h2>
+    </div>
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true" aria-controls="a1">
+            Üretim sistemlerine etkisi var mı?
+          </button>
+        </h2>
+        <div id="a1" class="accordion-collapse collapse show" aria-labelledby="q1" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Non‑destructive yaklaşım ve zaman aşımı kontrolleriyle üretim yükünü minimumda tutar.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
+            Agresif profil nasıl çalışır?
+          </button>
+        </h2>
+        <div id="a2" class="accordion-collapse collapse" aria-labelledby="q2" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Opt‑in ile etkinleştirilir, geniş dosya ve endpoint kontrolleri ekler, sadece onayla çalışır.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="q3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
+            Sonuçlar nasıl sunulur?
+          </button>
+        </h2>
+        <div id="a3" class="accordion-collapse collapse" aria-labelledby="q3" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Bulgu ve öneri kartlarında sınıflandırılmış, aksiyona dönüştürülebilir biçimde.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-cta fade-up">
+  <div class="container">
+    <div class="cta-card">
+      <h3>Enterprise ile agresif profili etkinleştirin</h3>
+      <p>Şirket formunda “Agresif pentest profili” işaretleyerek kapsamı genişletin.</p>
+      <a href="{{ url_for('plans_public_view') }}" class="btn btn-dark btn-lg">Paketleri İncele</a>
+    </div>
+  </div>
+</section>
+
+<section class="landing-contact fade-up" id="contact">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>İletişim</h2>
+      <p>Sorun, öneri veya işbirliği için bize ulaşın.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>E‑posta</h5>
+            <p><a href="mailto:hello@example.com">hello@example.com</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5>Sosyal</h5>
+            <p><a href="#">Twitter</a> · <a href="#">GitHub</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

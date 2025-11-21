@@ -1,0 +1,190 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="container my-4 result-admin">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h1 class="h4">Tarama Sonucu</h1>
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('result_pdf', rid=row['id']) }}">PDF Göster</a>
+        <a class="btn btn-sm btn-primary" href="{{ url_for('result_pdf', rid=row['id']) }}?dl=1">PDF Olarak İndir</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('result_json', rid=row['id']) }}">JSON Göster</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('result_json', rid=row['id']) }}?dl=1">JSON İndir</a>
+      </div>
+    </div>
+
+    <!-- 1. Sonuç Özeti Kartı -->
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="label">Sonuç ID</div>
+            <div class="value">{{ row['id'] }}</div>
+          </div>
+          <div class="col-md-3">
+            <div class="label">Tarih</div>
+            <div class="value">{{ row['created_at'] | int | datetime }}</div>
+          </div>
+          <div class="col-md-3">
+            <div class="label">Şirket</div>
+            <div class="value">{{ row['name'] }}</div>
+          </div>
+          <div class="col-md-3">
+            <div class="label">Hedef URL</div>
+            <div class="value">{{ target or '-' }}</div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-3">
+            <div class="label">Test Paketi</div>
+            <div class="value">{{ profile }}</div>
+          </div>
+          <div class="col-md-9">
+            {% set high = explanations|selectattr('severity','equalto','high')|list|length %}
+            {% set medium = explanations|selectattr('severity','equalto','medium')|list|length %}
+            {% set low = explanations|selectattr('severity','equalto','low')|list|length %}
+            {% set total = (high + medium + low) if (high + medium + low) > 0 else 1 %}
+            {% set h_pct = (high * 100) // total %}
+            {% set m_pct = (medium * 100) // total %}
+            {% set l_pct = 100 - h_pct - m_pct %}
+            <div class="risk-row d-flex align-items-center gap-3">
+              <div class="risk-ring" style="--h: {{ h_pct }}%; --m: {{ m_pct }}%;"></div>
+              <div class="d-flex gap-2">
+                <span class="chip chip-high">High: {{ high }}</span>
+                <span class="chip chip-medium">Medium: {{ medium }}</span>
+                <span class="chip chip-low">Low: {{ low }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Bulgular Tablosu -->
+    <div class="card mb-3">
+      <div class="card-body">
+        <h2 class="section-title">Bulgular</h2>
+        {% if explanations and explanations|length > 0 %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr><th>Risk</th><th>Başlık</th><th>Durum</th><th>Aksiyon</th></tr>
+            </thead>
+            <tbody>
+              {% for it in explanations %}
+              {% set sev = (it.severity or 'low')|lower %}
+              <tr>
+                <td>
+                  {% if sev=='high' %}<span class="badge badge-red">High</span>
+                  {% elif sev=='medium' %}<span class="badge badge-amber">Medium</span>
+                  {% else %}<span class="badge badge-green">Low</span>{% endif %}
+                </td>
+                <td>{{ it.title }}</td>
+                {% set is_resolved = it.title in resolved_titles %}
+                <td>
+                  {% if is_resolved %}
+                    <span class="chip chip-resolved">Çözüldü</span>
+                  {% else %}
+                    <span class="chip chip-gray">Yeni</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-idx="{{ loop.index0 }}" onclick="toggleDetail(this)">Detay</button>
+                  <button class="btn btn-sm btn-outline-success" type="button" data-title="{{ it.title|e }}" data-rid="{{ row['id'] }}" onclick="markResolved(this)" {% if is_resolved %}disabled{% endif %}>
+                    {% if is_resolved %}Çözüldü{% else %}Çözüldü{% endif %}
+                  </button>
+                </td>
+              </tr>
+              <tr id="detail-{{ loop.index0 }}" class="detail-row" style="display:none;">
+                <td colspan="4">
+                  <div class="detail-panel">
+                    <div class="detail-grid">
+                      <div>
+                        <div class="label">Bulgu Açıklaması</div>
+                        <div class="text">{{ it.explanation }}</div>
+                      </div>
+                      <div>
+                        <div class="label">Öneri</div>
+                        <div class="text text-muted">{{ it.recommendation }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+          <div class="text-muted">Önemli bulgu yok.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 4. Ham Loglar Bölümü -->
+    <div class="card">
+      <div class="card-body">
+        <h2 class="section-title">Ham Loglar</h2>
+        <div class="raw-box"><pre>{{ row['detail'] }}</pre></div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .result-admin .label { font-size:12px; color:#6b7280; }
+    .result-admin .value { font-size:14px; color:#111827; font-weight:500; }
+    .section-title { font-size:18px; font-weight:600; margin-bottom:8px; }
+    .risk-ring { width:52px; height:52px; border-radius:50%; border:4px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,0.1); background: conic-gradient(#e53935 0% var(--h, 0%), #f59e0b var(--h, 0%) calc(var(--h, 0%) + var(--m, 0%)), #2e7d32 calc(var(--h, 0%) + var(--m, 0%)) 100%); }
+    .chip { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid transparent; }
+    .chip-high { background:#fdecea; color:#b71c1c; border-color:#f5c6cb; }
+    .chip-medium { background:#fff4e5; color:#aa6b00; border-color:#ffe0b2; }
+    .chip-low { background:#e7f7ea; color:#2e7d32; border-color:#c6e6cc; }
+    .chip-gray { background:#f3f4f6; color:#374151; border-color:#e5e7eb; }
+    .chip-resolved { background:#e7f7ea; color:#2e7d32; border-color:#c6e6cc; }
+    .badge { font-size:12px; padding:2px 6px; border-radius:6px; }
+    .badge-red { background:#fdecea; color:#b71c1c; }
+    .badge-amber { background:#fff8e1; color:#8d6e63; }
+    .badge-green { background:#e8f5e9; color:#2e7d32; }
+    .detail-panel { border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:12px; background:#fff; }
+    .detail-grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 767px){ .detail-grid { grid-template-columns: 1fr; } }
+    .raw-box { border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:8px; background:#0f172a; color:#e2e8f0; max-height:320px; overflow:auto; }
+    .raw-box pre { white-space: pre; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; line-height:1.35; }
+  </style>
+
+  <script>
+    function toggleDetail(btn){
+      const idx = (btn && btn.dataset) ? btn.dataset.idx : '';
+      const row = document.getElementById('detail-'+idx);
+      if(!row) return;
+      row.style.display = (row.style.display === 'none' || row.style.display === '') ? 'table-row' : 'none';
+    }
+    async function markResolved(btn){
+      const rid = (btn && btn.dataset) ? btn.dataset.rid : '';
+      const title = (btn && btn.dataset) ? btn.dataset.title : '';
+      if(!title){ return; }
+      try{
+        btn.disabled = true;
+        const res = await fetch(`/results/${rid}/resolve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title })
+        });
+        if(!res.ok){
+          btn.disabled = false;
+          return;
+        }
+        btn.classList.remove('btn-outline-success');
+        btn.classList.add('btn-success');
+        btn.textContent = 'Çözüldü';
+        const statusChip = btn.closest('tr').querySelector('td:nth-child(3) .chip');
+        if(statusChip){
+          statusChip.textContent = 'Çözüldü';
+          statusChip.classList.remove('chip-gray');
+          statusChip.classList.add('chip-resolved');
+        }
+      }catch(e){
+        btn.disabled = false;
+      }
+    }
+  </script>
+{% endblock %}

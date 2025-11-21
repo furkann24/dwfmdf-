@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="page-hero bg-animated hero fade-up reveal section">
+  <div class="container">
+    <h1 class="display-4">Özellikler</h1>
+    <p class="lead">Güvenlik başlıkları, port keşfi ve opt‑in agresif profil ile üretimi yormadan kapsamlı görünürlük.</p>
+    <div class="mt-3">
+      <a href="{{ url_for('plans_public_view') }}" class="btn btn-primary btn-gradient">Paketleri İncele</a>
+      <a href="{{ url_for('contact_public_view') }}" class="btn btn-outline btn-glow">İletişime Geç</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <div class="hero-mesh"></div>
+    <div class="orb orb-1 hero-orb"></div>
+    <div class="orb orb-2 hero-orb"></div>
+  </div>
+</section>
+
+<section class="features fade-up reveal section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Öne Çıkan Özellikler</h2>
+      <p>HSTS, CSP ve daha fazlası ile başlık analizi; hızlı port keşfi ve opt‑in agresif kontrol.</p>
+    </div>
+    <div class="features-grid">
+      <div class="card feature-card"><div class="card-body"><div class="feature-icon">🛡️</div><h5>Güvenlik Başlıkları</h5><p>HSTS, CSP, X‑Frame‑Options, X‑Content‑Type‑Options.</p></div></div>
+      <div class="card feature-card"><div class="card-body"><div class="feature-icon">🔎</div><h5>Port Keşfi</h5><p>Açık yüzey görünürlüğü için hızlı tarama.</p></div></div>
+      <div class="card feature-card"><div class="card-body"><div class="feature-icon">⚙️</div><h5>Agresif Profil</h5><p>Genişletilmiş dosya ve endpoint kontrolü (opt‑in).</p></div></div>
+      <div class="card feature-card"><div class="card-body"><div class="feature-icon">✅</div><h5>Etik ve Güvenli</h5><p>Üretime zarar vermeden yüksek değerli bulgular.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-highlights fade-up section">
+  <div class="container highlights">
+    <div class="highlight"><span class="highlight-title">Non‑Destructive</span><span class="highlight-text">HEAD→GET stratejisi ile üretimi yormadan keşif</span></div>
+    <div class="highlight"><span class="highlight-title">Agresif (Opt‑in)</span><span class="highlight-text">Enterprise için geniş dosya ve endpoint profili</span></div>
+    <div class="highlight"><span class="highlight-title">Yapılandırılabilir</span><span class="highlight-text">Kapsam ve listeler size göre özelleştirilebilir</span></div>
+  </div>
+</section>
+
+<section class="gh-dual fade-up section">
+  <div class="container gh-dual-inner">
+    <div class="gh-dual-left">
+      <div class="code-block"><pre><code># Başlık Analizi
+HSTS, CSP, X-Frame-Options, X-Content-Type-Options
+
+# Port Keşfi
+80/443 başta olmak üzere açık kapılar
+</code></pre></div>
+    </div>
+    <div class="gh-dual-right">
+      <div class="card"><div class="card-body"><h5>Bulgu & Öneri</h5><p>Eksik başlıklara yönelik öneriler ve örnek konfigürasyonlarla hızlı aksiyon.</p><div class="chip">CSP</div> <div class="chip">HSTS</div> <div class="chip">X‑Frame‑Options</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-card">
+      <h3>Şimdi deneyin</h3>
+      <p>Plan seçip hedefinizi tanımlayın; bulgular dakikalar içinde gelsin.</p>
+      <a class="btn btn-dark" href="{{ url_for('plans_public_view') }}">Paketleri İncele</a>
+    </div>
+  </div>
+</section>
+
+<section class="landing-steps fade-up section">
+  <div class="container">
+    <div class="section-head text-center"><h2>3 Adımda Başlayın</h2><p>İşinizi yormadan görünürlüğü artırın.</p></div>
+    <div class="row g-3 text-center">
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="badge badge-blue">1</div><h5>Planı Seç</h5><p>Basic, Pro veya Enterprise.</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="badge badge-blue">2</div><h5>Hedefi Tanımla</h5><p>URL ve kapsam ayarları.</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><div class="badge badge-blue">3</div><h5>Taramayı Başlat</h5><p>Bulgu ve öneri kartları.</p></div></div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

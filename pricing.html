@@ -1,0 +1,232 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated hero fade-up reveal section">
+    <div class="container">
+      <h1 class="display-4">Planlar</h1>
+      <p class="lead">İhtiyacınıza uygun paketi seçin ve ödeme yapın.</p>
+    </div>
+    <div class="hero-art">
+      <div class="hero-mesh"></div>
+      <div class="hero-orb orb-1"></div>
+      <div class="hero-orb orb-2"></div>
+    </div>
+  </section>
+  <form method="post" action="{{ url_for('checkout') }}">
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Şirket</label>
+        <select class="form-select" name="company_id" required>
+          {% for c in companies %}
+            <option value="{{ c['id'] }}">#{{ c['id'] }} {{ c['name'] }} ({{ c['package'] }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Plan</label>
+        <div class="row g-2">
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card p-3 h-100">
+              <div class="h5">Basic</div>
+              <div class="text-muted mb-2">Başlangıç ihtiyaçlarınız için.</div>
+              <div class="h4">{{ (prices['basic']/100)|int }} TL</div>
+              {% if plan_features and plan_features['basic'] %}
+                <ul class="text-muted mb-2" style="margin-top:8px;">
+                  {% for f in plan_features['basic'] %}
+                    <li>{{ f }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="plan" value="basic" id="plan-basic" checked>
+                <label class="form-check-label" for="plan-basic">Seç</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card p-3 h-100">
+              <div class="h5">Pro</div>
+              <div class="text-muted mb-2">Geniş kapsamlı taramalar.</div>
+              <div class="h4">{{ (prices['pro']/100)|int }} TL</div>
+              {% if plan_features and plan_features['pro'] %}
+                <ul class="text-muted mb-2" style="margin-top:8px;">
+                  {% for f in plan_features['pro'] %}
+                    <li>{{ f }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="plan" value="pro" id="plan-pro">
+                <label class="form-check-label" for="plan-pro">Seç</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card p-3 h-100">
+              <div class="h5">Enterprise</div>
+              <div class="text-muted mb-2">Kurumsal güvenlik ve destek.</div>
+              <div class="h4">{{ (prices['enterprise']/100)|int }} TL</div>
+              {% if plan_features and plan_features['enterprise'] %}
+                <ul class="text-muted mb-2" style="margin-top:8px;">
+                  {% for f in plan_features['enterprise'] %}
+                    <li>{{ f }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="plan" value="enterprise" id="plan-enterprise">
+                <label class="form-check-label" for="plan-enterprise">Seç</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if stripe_public_key %}
+      <p class="text-muted">Ödeme Stripe ile güvenle alınır.</p>
+    {% else %}
+      <p class="text-muted">Geliştirme modunda ödeme simüle edilir.</p>
+    {% endif %}
+    <div class="card mt-3 p-3">
+      <div class="h5 mb-2">Karşılaştırma: Hangi test hangi planda?</div>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Test/Kapsam</th>
+              <th>Basic</th>
+              <th>Pro</th>
+              <th>Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in plan_tests %}
+              <tr>
+                <td>{{ t.name }}</td>
+                <td>
+                  {% if t.basic is boolean %}
+                    {{ t.basic and '✔️' or '—' }}
+                  {% else %}
+                    {{ t.basic }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if t.pro is boolean %}
+                    {{ t.pro and '✔️' or '—' }}
+                  {% else %}
+                    {{ t.pro }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if t.enterprise is boolean %}
+                    {{ t.enterprise and '✔️' or '—' }}
+                  {% else %}
+                    {{ t.enterprise }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="text-muted small">Not: Otomatik tarama sıklığı plandan bağımsız olarak manuel tetiklemeyi destekler.</div>
+    </div>
+    <button class="btn btn-primary" type="submit">Ödeme Yap</button>
+  </form>
+
+  <section class="mt-4">
+    <div class="section-title">Neler Dahil?</div>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="card h-100 p-3">
+          <div class="h6">Başlık Analizi</div>
+          <div class="text-muted">HSTS, CSP, X‑Frame‑Options, X‑Content‑Type‑Options ve daha fazlası.</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 p-3">
+          <div class="h6">Port Keşfi</div>
+          <div class="text-muted">Önemli TCP portları ve pro/enterprise’da geniş tarama.</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 p-3">
+          <div class="h6">Bildirimler</div>
+          <div class="text-muted">Enterprise için SMTP/Webhook entegrasyonu ve öncelikli bildirim.</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 p-3">
+          <div class="h6">Raporlama</div>
+          <div class="text-muted">Bulgu & öneri kartları ve uygulanabilir aksiyon listeleri.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <div class="section-title">Destek ve SLA</div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="h6">Basic</div>
+          <div class="text-muted">E‑posta desteği, topluluk kaynakları, aylık rapor özeti.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="h6">Pro</div>
+          <div class="text-muted">Öncelikli e‑posta, haftalık rapor, geniş kapsam takip.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 p-3">
+          <div class="h6">Enterprise</div>
+          <div class="text-muted">Öncelikli kanal, özel kural setleri, günlük rapor ve danışmanlık.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <div class="section-title">Sık Sorulanlar (Planlar)</div>
+    <div class="accordion" id="pricingFaq">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="pfq1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pfa1" aria-expanded="true" aria-controls="pfa1">
+            Ödemeler nasıl alınır?
+          </button>
+        </h2>
+        <div id="pfa1" class="accordion-collapse collapse show" aria-labelledby="pfq1" data-bs-parent="#pricingFaq">
+          <div class="accordion-body">Stripe ile güvenli ödeme veya geliştirme modunda offline simülasyon.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="pfq2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pfa2" aria-expanded="false" aria-controls="pfa2">
+            Planlar arası geçiş mümkün mü?
+          </button>
+        </h2>
+        <div id="pfa2" class="accordion-collapse collapse" aria-labelledby="pfq2" data-bs-parent="#pricingFaq">
+          <div class="accordion-body">Yükseltme ve düşürme desteklenir; kapsam ve sıklık buna göre güncellenir.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="pfq3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pfa3" aria-expanded="false" aria-controls="pfa3">
+            Enterprise’da neler ekstra?
+          </button>
+        </h2>
+        <div id="pfa3" class="accordion-collapse collapse" aria-labelledby="pfq3" data-bs-parent="#pricingFaq">
+          <div class="accordion-body">Özel kural setleri, entegrasyonlar (SMTP/Webhook), öncelikli destek ve danışmanlık.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-4">
+    <div class="card p-3 text-center">
+      <div class="h5 mb-2">Memnuniyet Garantisi</div>
+      <div class="text-muted">Beklentileri karşılamazsa, Pro/Enterprise için ilk 30 günde ücretsiz plan değişimi.</div>
+    </div>
+  </section>
+{% endblock %}

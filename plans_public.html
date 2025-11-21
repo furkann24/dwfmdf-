@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+{% block title %}Planlar{% endblock %}
+{% block content %}
+<section class="page-hero bg-animated hero fade-up reveal section">
+  <div class="container">
+    <h1 class="display-4">Planlar ve Özellikler</h1>
+    <p class="lead">İhtiyacınıza göre Basic, Pro veya Enterprise seçeneklerinden birini tercih edin.</p>
+  </div>
+  <div class="hero-art">
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="row">
+    {% for plan in ['basic','pro','enterprise'] %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h3 class="card-title text-capitalize">{{ plan }}</h3>
+          <h4 class="card-subtitle mb-3 text-muted">{{ prices.get(plan) and (prices.get(plan) / 100)|int }} ₺ / ay</h4>
+          <ul class="list-unstyled flex-grow-1">
+            {% for feat in plan_features[plan] %}
+            <li class="mb-2">✓ {{ feat }}</li>
+            {% endfor %}
+          </ul>
+          <div>
+            <a class="btn btn-outline-primary disabled" aria-disabled="true">Panelden Satın Alın (Giriş Gerekir)</a>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="p-4 rounded gh-info-box">
+    <h3>Nasıl çalışır?</h3>
+    <p>Şirketinizi ekleyin, hedef URL’nizi tanımlayın ve seçtiğiniz plan kapsamındaki taramaları başlatın. Yönetim işlemleri yalnızca yetkili kullanıcılar tarafından yapılır.</p>
+  </div>
+  <style>
+    .gh-info-box { background: var(--bs-gray-100); border: 1px solid var(--bs-gray-300); }
+    @media (prefers-color-scheme: dark) {
+      .gh-info-box { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+    }
+  </style>
+</section>
+<section class="container my-5">
+  <h2 class="mb-4">Neler Dahil?</h2>
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 fade-up">
+        <div class="card-body">
+          <h5 class="card-title">Başlık Analizi</h5>
+          <p class="card-text">Hedef URL ve sayfa başlıklarında zafiyet odaklı tarama.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 fade-up" style="animation-delay: .05s;">
+        <div class="card-body">
+          <h5 class="card-title">Port Keşfi</h5>
+          <p class="card-text">Açık portlar ve servis fingerprint analizleri.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 fade-up" style="animation-delay: .1s;">
+        <div class="card-body">
+          <h5 class="card-title">Bildirimler</h5>
+          <p class="card-text">Kritik bulgularda e-posta bildirimleri ve özet raporlar.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 fade-up" style="animation-delay: .15s;">
+        <div class="card-body">
+          <h5 class="card-title">Raporlama</h5>
+          <p class="card-text">PDF/CSV raporlar; ekip paylaşımı ve arşivleme.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <h2 class="mb-4">Destek ve SLA</h2>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Basic</h5>
+          <p class="card-text">E-posta desteği, 48 saat yanıt süresi, topluluk dokümantasyonu.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Pro</h5>
+          <p class="card-text">Öncelikli destek, 24 saat yanıt, aylık danışman saatleri.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Enterprise</h5>
+          <p class="card-text">SLA anlaşmaları, 4 saat yanıt, özel kanal ve eğitim.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <h2 class="mb-4">Sık Sorulan Sorular</h2>
+  <div class="accordion" id="plansFaq">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="pf-q1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pf-a1" aria-expanded="true" aria-controls="pf-a1">Deneme sürümü var mı?</button>
+      </h2>
+      <div id="pf-a1" class="accordion-collapse collapse show" aria-labelledby="pf-q1" data-bs-parent="#plansFaq">
+        <div class="accordion-body">Evet, Basic plan özelliklerinin bir kısmını içeren sınırlı bir deneme sunuyoruz.</div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="pf-q2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pf-a2" aria-expanded="false" aria-controls="pf-a2">Veri güvenliği nasıl sağlanıyor?</button>
+      </h2>
+      <div id="pf-a2" class="accordion-collapse collapse" aria-labelledby="pf-q2" data-bs-parent="#plansFaq">
+        <div class="accordion-body">Verileriniz şifrelenir; erişimler loglanır ve rol tabanlı yetkilendirme uygulanır.</div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="pf-q3">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pf-a3" aria-expanded="false" aria-controls="pf-a3">Plan yükseltme/düşürme nasıl çalışır?</button>
+      </h2>
+      <div id="pf-a3" class="accordion-collapse collapse" aria-labelledby="pf-q3" data-bs-parent="#plansFaq">
+        <div class="accordion-body">Panelden istediğiniz an plan değişimi yapabilirsiniz; faturalama orantılanır.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Memnuniyet Garantisi</h4>
+      <p class="card-text">İlk 30 gün içinde memnun kalmazsanız, hiçbir neden belirtmeden iptal edebilirsiniz.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

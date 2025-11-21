@@ -1,0 +1,97 @@
+/* React-like neutral UI theme overrides */
+:root {
+  --r-bg: #f8fafc; /* slate-50 */
+  --r-surface: #ffffff;
+  --r-text: #0f172a; /* slate-900 */
+  --r-muted: #64748b; /* slate-500 */
+  --r-border: #e5e7eb; /* gray-200 */
+  --r-primary: #3b82f6; /* blue-500 */
+  --r-primary-dark: #2563eb; /* blue-600 */
+}
+
+/* Base surface and typography */
+body.app-bg { background: var(--r-bg); color: var(--r-text); }
+.content { padding: 24px; }
+
+/* Topbar: clean white with subtle shadow */
+.topbar { background: var(--r-surface); border-bottom: 1px solid var(--r-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.topbar .nav-links a { color: var(--r-muted); }
+.topbar .nav-links a:hover { color: var(--r-text); }
+.topbar .nav-links a.active { color: var(--r-primary-dark); border-bottom: 2px solid var(--r-primary-dark); padding-bottom: 4px; }
+.topbar .btn-sm { border-color: var(--r-border); }
+
+/* Sidebar: neutral surface and tidy hover */
+.sidebar { background: var(--r-surface); border-right: 1px solid var(--r-border); }
+.sidebar .nav a { color: var(--r-muted); }
+.sidebar .nav a:hover { background: #f1f5f9; color: var(--r-text); }
+.sidebar .nav .active { background: #e0f2fe; color: var(--r-primary-dark); }
+
+/* Cards: subtle border and elevation, consistent radius */
+.card { background: var(--r-surface); border: 1px solid var(--r-border); border-radius: 12px; }
+.card:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: box-shadow .18s ease, transform .12s ease; }
+.card .card-title { color: var(--r-text); }
+.card .card-text { color: var(--r-muted); }
+
+/* Buttons: React-y primary and outline styles */
+.btn { background: var(--r-primary); border-radius: 10px; box-shadow: 0 6px 14px rgba(59,130,246,0.18); }
+.btn:hover { background: var(--r-primary-dark); box-shadow: 0 10px 20px rgba(59,130,246,0.22); }
+.btn-outline { background: transparent; color: var(--r-primary-dark); border: 1px solid var(--r-primary-dark); }
+.btn-gradient { background: linear-gradient(90deg, var(--r-primary), var(--r-primary-dark)); }
+
+/* Forms */
+.form-label { color: var(--r-text); font-weight: 600; }
+.form-control, .form-select { border: 1px solid var(--r-border); border-radius: 10px; }
+
+/* Hero ornaments: tone down to match neutral app vibe */
+.hero-mesh, .hero-orb { display: none; }
+.page-hero { padding: 36px 0 8px; }
+.display-4 { color: var(--r-text); }
+.lead { color: var(--r-muted); }
+
+/* Login split: keep structure, lighten presentation */
+.login-brand { background: #f1f5f9; border-color: var(--r-border); }
+.login-card { border-color: var(--r-border); }
+
+/* Tables */
+.table thead th { color: var(--r-muted); }
+.table tbody td { color: var(--r-text); }
+
+/* Footer */
+.site-footer { background: var(--r-surface); border-top: 1px solid var(--r-border); }
+.footer-text { color: var(--r-muted); }
+.footer-links a { color: var(--r-muted); }
+.footer-links a:hover { color: var(--r-text); }
+
+/* Typography: use Inter everywhere */
+body, .topbar, .sidebar, .content, .card, .btn, .form-control, .form-select, .table, .site-footer {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus-visible ring for accessible SPA-like interactions */
+:where(a, button, .btn, input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+}
+
+/* Inputs hover/focus polish */
+input[type="text"], input[type="email"], input[type="password"], select, textarea {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+/* Button subtle motion */
+.btn, .btn-sm, .btn-outline, .btn-gradient {
+  transition: transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+.btn:hover, .btn-sm:hover, .btn-outline:hover, .btn-gradient:hover {
+  transform: translateY(-1px);
+}
+.btn:active, .btn-sm:active, .btn-outline:active, .btn-gradient:active {
+  transform: translateY(0);
+}

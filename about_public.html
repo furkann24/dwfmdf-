@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="page-hero bg-animated hero fade-up reveal section">
+  <div class="container">
+    <h1 class="display-4">Hakkında</h1>
+    <p class="lead">Tehdit yüzeyini görünür kılan, üretimi yormayan güvenlik keşfi platformu.</p>
+  </div>
+  <div class="hero-art">
+    <div class="hero-mesh"></div>
+    <div class="orb orb-1 hero-orb"></div>
+    <div class="orb orb-2 hero-orb"></div>
+  </div>
+</section>
+
+<section class="section fade-up reveal">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-xl-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h3>Vizyon</h3>
+            <p>Güvenlik başlıkları, portlar ve seçmeli agresif profille hızlı görünürlük; dev ekipleri rahatsız etmeden aksiyona dönüştürülebilir bulgular.</p>
+            <div class="chip">CSP</div>
+            <div class="chip">HSTS</div>
+            <div class="chip">X‑Frame‑Options</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="code-block"><pre><code>values = ["Non‑Destructive", "Configurable", "Actionable"]
+for v in values:
+    print(v)
+</code></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section fade-up">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-value">10k+</div>
+          <div class="stat-label">Başlık Kontrolü</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-value">1.2k</div>
+          <div class="stat-label">Port Keşfi</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="stat-card">
+          <div class="stat-value">99.9%</div>
+          <div class="stat-label">Güvenli Çalışma</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section fade-up">
+  <div class="container">
+    <div class="section-head text-center">
+      <h2>Ekibimiz</h2>
+      <p>Güvenlik ve geliştirici deneyimini birlikte tasarlıyoruz.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4"><div class="team-card"><img src="/static/img/avatar1.png" alt=""/><h5>Ayşe</h5><p>Security Researcher</p></div></div>
+      <div class="col-md-4"><div class="team-card"><img src="/static/img/avatar2.png" alt=""/><h5>Mehmet</h5><p>Platform Engineer</p></div></div>
+      <div class="col-md-4"><div class="team-card"><img src="/static/img/avatar3.png" alt=""/><h5>Zeynep</h5><p>UX Designer</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section fade-up">
+  <div class="container">
+    <div class="cta-card">
+      <h3>Hadi Tanışalım</h3>
+      <p>Platformu ihtiyaçlarınıza göre nasıl uyarlayabileceğimizi konuşalım.</p>
+      <a class="btn btn-primary btn-gradient" href="{{ url_for('contact_public_view') }}">İletişime Geç</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

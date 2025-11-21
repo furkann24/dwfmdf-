@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <section class="page-hero bg-animated mb-3">
+    <div class="container">
+      <h1 class="display-4">{{ company and 'Şirketi Düzenle' or 'Yeni Şirket' }}</h1>
+      <p class="lead">Temel şirket bilgilerini girin ve hedef URL tanımlayın.</p>
+    </div>
+    <div class="hero-mesh"></div>
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+  </section>
+  <form method="post" action="{{ company and url_for('companies_update', company_id=company['id']) or url_for('companies_create') }}" class="mt-3">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Şirket Adı</label>
+        <input class="form-control" type="text" name="name" value="{{ company and company['name'] }}" required />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">E-posta (bildirim)</label>
+        <input class="form-control" type="email" name="email" value="{{ company and company['email'] }}" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Paket</label>
+        <select class="form-select" name="package">
+          {% for p in ['basic','pro','enterprise'] %}
+          <option value="{{ p }}" {% if company and company['package']==p %}selected{% endif %}>{{ p|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">Hedef URL</label>
+        <input class="form-control" type="text" name="target_url" placeholder="https://example.com" value="{{ company and company['target_url'] }}" required />
+      </div>
+    </div>
+    <div class="mt-3">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="aggressive_pentest" name="aggressive_pentest" {% if company and company['aggressive_pentest'] == 1 %}checked{% endif %} />
+        <label class="form-check-label" for="aggressive_pentest">
+          Agresif pentest profili (opt-in)
+        </label>
+      </div>
+      <div class="text-muted small mt-1">
+        Daha kapsamlı ve ağır kontrolleri içerir. Yasal/etik onay gerektirir ve hedefe yük bindirmeyecek şekilde sınırlandırılmıştır.
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Kaydet</button>
+      <a class="btn btn-link" href="{{ url_for('companies_list') }}">İptal</a>
+    </div>
+  </form>
+{% endblock %}
